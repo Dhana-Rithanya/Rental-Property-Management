@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
-  const location = useLocation();
+  useLocation(); // triggers re-render on route change to keep nav in sync
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   const userType = localStorage.getItem("userType");
 
@@ -11,8 +11,6 @@ function Navbar() {
     localStorage.removeItem("userType");
     navigate("/");
   };
-
-  // useLocation() causes re-render on every route change, keeping nav in sync
 
   return (
     <nav className="navbar">
