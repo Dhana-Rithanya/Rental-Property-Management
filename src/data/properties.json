@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "title": "Luxury Apartment",
+    "location": "Chennai",
+    "price": 25000,
+    "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&auto=format&fit=crop",
+    "description": "Spacious 2BHK apartment in city center with balcony and parking."
+  },
+  {
+    "id": 2,
+    "title": "Modern Villa",
+    "location": "Bangalore",
+    "price": 45000,
+    "image": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&auto=format&fit=crop",
+    "description": "Premium villa with garden, parking, and 24/7 security."
+  },
+  {
+    "id": 3,
+    "title": "Cozy Studio",
+    "location": "Hyderabad",
+    "price": 15000,
+    "image": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&auto=format&fit=crop",
+    "description": "Affordable studio apartment ideal for working professionals."
+  },
+  {
+    "id": 4,
+    "title": "Family House",
+    "location": "Chennai",
+    "price": 35000,
+    "image": "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop",
+    "description": "3BHK independent house in peaceful residential area."
+  },
+  {
+    "id": 5,
+    "title": "City View Apartment",
+    "location": "Bangalore",
+    "price": 30000,
+    "image": "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&auto=format&fit=crop",
+    "description": "Apartment with beautiful city skyline view and gym access."
+  },
+  {
+    "id": 6,
+    "title": "Budget 1BHK",
+    "location": "Hyderabad",
+    "price": 12000,
+    "image": "https://images.unsplash.com/photo-1554995207-c18c203602cb?w=400&auto=format&fit=crop",
+    "description": "Compact 1BHK perfect for students and bachelors."
+  },
+  {
+    "id": 7,
+    "title": "Premium Penthouse",
+    "location": "Chennai",
+    "price": 60000,
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&auto=format&fit=crop",
+    "description": "Luxury penthouse with terrace and private elevator."
+  },
+  {
+    "id": 8,
+    "title": "Lake Side Villa",
+    "location": "Bangalore",
+    "price": 55000,
+    "image": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&auto=format&fit=crop",
+    "description": "Beautiful villa near lake with large garden area."
+  },
+  {
+    "id": 9,
+    "title": "Compact Studio",
+    "location": "Hyderabad",
+    "price": 18000,
+    "image": "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=400&auto=format&fit=crop",
+    "description": "Modern studio apartment close to metro station."
+  },
+  {
+    "id": 10,
+    "title": "Corporate Rental Flat",
+    "location": "Chennai",
+    "price": 40000,
+    "image": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&auto=format&fit=crop",
+    "description": "Fully furnished 2BHK suitable for corporate stays."
+  },
+  {
+    "id": 11,
+    "title": "Garden View House",
+    "location": "Bangalore",
+    "price": 32000,
+    "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&auto=format&fit=crop",
+    "description": "Independent house with private garden and parking."
+  },
+  {
+    "id": 12,
+    "title": "Affordable Family Flat",
+    "location": "Hyderabad",
+    "price": 22000,
+    "image": "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&auto=format&fit=crop",
+    "description": "2BHK apartment in gated community with security."
+  }
+]
