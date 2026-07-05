@@ -8,6 +8,7 @@ import com.rental.backend.repository.BookingRepository;
 import com.rental.backend.repository.PropertyRepository;
 import com.rental.backend.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -31,18 +31,21 @@ public class BookingController {
     @Autowired
     private UserRepository userRepository;
 
+    @Transactional
     @PostMapping("/{propertyId}")
     public ResponseEntity<?> requestRent(@PathVariable Long propertyId, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
+        if (userId == null)
+            return ResponseEntity.status(401).body(Map.of("error", "Not logged in"));
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null)
+            return ResponseEntity.status(404).body(Map.of("error", "User not found"));
 
         if ("Owner".equals(user.getRole()))
             return ResponseEntity.badRequest().body(Map.of("error", "Owners cannot request to rent"));
 
-        Property property = propertyRepository.findById(propertyId)
-                .orElse(null);
+        Property property = propertyRepository.findById(propertyId).orElse(null);
         if (property == null)
             return ResponseEntity.status(404).body(Map.of("error", "Property not found"));
 
@@ -59,12 +62,16 @@ public class BookingController {
         return ResponseEntity.ok(Map.of("message", "Rent request submitted successfully"));
     }
 
+    @Transactional
     @GetMapping("/requests")
     public ResponseEntity<?> getOwnerRequests(HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
+        if (userId == null)
+            return ResponseEntity.status(401).body(Map.of("error", "Not logged in"));
 
-        User owner = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User owner = userRepository.findById(userId).orElse(null);
+        if (owner == null)
+            return ResponseEntity.status(404).body(Map.of("error", "User not found"));
 
         if (!"Owner".equals(owner.getRole()))
             return ResponseEntity.status(403).body(Map.of("error", "Access denied"));
@@ -84,24 +91,26 @@ public class BookingController {
         return ResponseEntity.ok(result);
     }
 
+    @Transactional
     @PostMapping("/{bookingId}/status")
     public ResponseEntity<?> updateStatus(@PathVariable Long bookingId,
                                           @RequestBody Map<String, String> body,
                                           HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
+        if (userId == null)
+            return ResponseEntity.status(401).body(Map.of("error", "Not logged in"));
 
-        User owner = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User owner = userRepository.findById(userId).orElse(null);
+        if (owner == null)
+            return ResponseEntity.status(404).body(Map.of("error", "User not found"));
 
         if (!"Owner".equals(owner.getRole()))
             return ResponseEntity.status(403).body(Map.of("error", "Access denied"));
 
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElse(null);
+        Booking booking = bookingRepository.findByIdWithDetails(bookingId).orElse(null);
         if (booking == null)
             return ResponseEntity.status(404).body(Map.of("error", "Booking not found"));
 
-        // Authorization: only the owner of the property can update status
         if (!booking.getProperty().getOwner().getId().equals(userId))
             return ResponseEntity.status(403).body(Map.of("error", "You are not the owner of this property"));
 
@@ -115,8 +124,23 @@ public class BookingController {
         String prevStatus = booking.getStatus().name();
         booking.setStatus(newStatus);
         booking.setUpdatedAt(LocalDateTime.now());
-        booking.setAuditLog(booking.getAuditLog() + " | Status changed from " + prevStatus + " to " + newStatus + " by owner " + owner.getEmail() + " at " + LocalDateTime.now());
+        booking.setAuditLog(booking.getAuditLog() + " | Status changed from " + prevStatus
+                + " to " + newStatus + " by owner " + owner.getEmail() + " at " + LocalDateTime.now());
         bookingRepository.save(booking);
+
+        // If approved, mark property as RENTED
+        if (newStatus == BookingStatus.APPROVED) {
+            Property property = booking.getProperty();
+            property.setStatus("RENTED");
+            propertyRepository.save(property);
+        }
+
+        // If rejected, mark property back to AVAILABLE
+        if (newStatus == BookingStatus.REJECTED) {
+            Property property = booking.getProperty();
+            property.setStatus("AVAILABLE");
+            propertyRepository.save(property);
+        }
 
         return ResponseEntity.ok(Map.of("message", "Status updated to " + newStatus));
     }

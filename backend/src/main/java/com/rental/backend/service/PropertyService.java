@@ -16,7 +16,7 @@ public class PropertyService {
     private PropertyRepository propertyRepository;
 
     public List<Property> getAllProperties() {
-        return propertyRepository.findAll();
+        return propertyRepository.findByStatus("AVAILABLE");
     }
 
     public Optional<Property> getPropertyById(Long id) {
@@ -24,7 +24,7 @@ public class PropertyService {
     }
 
     public List<Property> getPropertiesByLocation(String location) {
-        return propertyRepository.findByLocation(location);
+        return propertyRepository.findByLocationAndStatus(location, "AVAILABLE");
     }
 
     public List<Property> getPropertiesByOwner(User owner) {
@@ -32,6 +32,7 @@ public class PropertyService {
     }
 
     public Property addProperty(Property property) {
+        property.setStatus("AVAILABLE");
         return propertyRepository.save(property);
     }
 

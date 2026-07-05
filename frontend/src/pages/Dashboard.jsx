@@ -52,7 +52,9 @@ function Dashboard() {
                   <div className="property-item" key={p.id}>
                     <h3>{p.title}</h3>
                     <p>{p.location} - ${p.price}/month</p>
-                    <span className="status-badge">Active</span>
+                    <span className={`status-badge ${p.status === 'RENTED' ? 'status-rented' : 'status-available'}`}>
+                      {p.status === 'RENTED' ? 'Rented' : 'Available'}
+                    </span>
                   </div>
                 ))
               ) : (

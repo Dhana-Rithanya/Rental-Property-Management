@@ -7,6 +7,7 @@ import com.rental.backend.repository.BookingRepository;
 import com.rental.backend.repository.UserRepository;
 import com.rental.backend.service.PropertyService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ public class DashboardController {
     @Autowired
     private BookingRepository bookingRepository;
 
+    @Transactional
     @GetMapping
     public ResponseEntity<?> getDashboard(HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");

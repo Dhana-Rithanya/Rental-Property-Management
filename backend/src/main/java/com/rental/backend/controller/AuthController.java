@@ -2,6 +2,7 @@ package com.rental.backend.controller;
 
 import com.rental.backend.model.User;
 import com.rental.backend.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Map<String, String> body) {
+    public ResponseEntity<?> register(@RequestBody Map<String, String> body, HttpServletRequest request) {
         try {
             User user = authService.register(
                 body.get("name"),
@@ -26,6 +27,10 @@ public class AuthController {
                 body.get("password"),
                 body.get("role")
             );
+            HttpSession session = request.getSession(true);
+            session.setAttribute("userId", user.getId());
+            session.setAttribute("userRole", user.getRole());
+            session.setMaxInactiveInterval(86400);
             return ResponseEntity.ok(Map.of(
                 "id", user.getId(),
                 "name", user.getName(),
@@ -38,11 +43,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> body, HttpSession session) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> body, HttpServletRequest request) {
         Optional<User> user = authService.login(body.get("email"), body.get("password"));
         if (user.isPresent()) {
+            HttpSession session = request.getSession(true);
             session.setAttribute("userId", user.get().getId());
             session.setAttribute("userRole", user.get().getRole());
+            session.setMaxInactiveInterval(86400);
             return ResponseEntity.ok(Map.of(
                 "id", user.get().getId(),
                 "name", user.get().getName(),
@@ -62,9 +69,8 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?> me(HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
+        if (userId == null)
             return ResponseEntity.status(401).body(Map.of("error", "Not logged in"));
-        }
         return ResponseEntity.ok(Map.of(
             "userId", userId,
             "role", session.getAttribute("userRole")

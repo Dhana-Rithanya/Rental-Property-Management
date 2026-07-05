@@ -8,5 +8,5 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 
 server.port=8080
 
-# CORS
+# CORS - comma-separated list of allowed origins
 app.cors.allowed-origins=${ALLOWED_ORIGINS:http://localhost:5173}

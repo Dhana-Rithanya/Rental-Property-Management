@@ -1,5 +1,6 @@
 package com.rental.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -24,7 +25,11 @@ public class Property {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ManyToOne
+    @Column(nullable = false)
+    private String status = "AVAILABLE";
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;
 
@@ -39,6 +44,8 @@ public class Property {
     public void setImage(String image) { this.image = image; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
     public User getOwner() { return owner; }
     public void setOwner(User owner) { this.owner = owner; }
 }
