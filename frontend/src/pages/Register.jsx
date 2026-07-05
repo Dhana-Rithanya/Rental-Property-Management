@@ -13,8 +13,15 @@ function Register() {
   const { setUser } = useAuth();
   const navigate = useNavigate();
 
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+  const isPasswordValid = passwordPattern.test(password);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isPasswordValid) {
+      setError('Password must be at least 8 characters with uppercase, lowercase, and a number');
+      return;
+    }
     const data = await api.post('/auth/register', { name, email, password, role });
     if (data.error) {
       setError(data.error);
@@ -41,6 +48,9 @@ function Register() {
           <div className="form-group">
             <label>Password</label>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <small style={{ color: password && !isPasswordValid ? '#e74c3c' : '#888', display: 'block', marginTop: 4 }}>
+              At least 8 characters with uppercase, lowercase, and a number
+            </small>
           </div>
           <div className="form-group">
             <label>Role</label>
@@ -49,7 +59,7 @@ function Register() {
               <option value="Owner">Owner</option>
             </select>
           </div>
-          <button type="submit" className="auth-btn">Register</button>
+          <button type="submit" className="auth-btn" disabled={!isPasswordValid}>Register</button>
         </form>
         <p className="auth-link">Already have an account? <Link to="/login">Login</Link></p>
       </div>
