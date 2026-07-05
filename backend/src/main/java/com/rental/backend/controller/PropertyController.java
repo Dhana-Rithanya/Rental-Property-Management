@@ -46,6 +46,8 @@ public class PropertyController {
     @PostMapping
     public ResponseEntity<?> addProperty(@RequestBody Property property, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
+        if (userId == null)
+            return ResponseEntity.status(401).body(Map.of("error", "Not logged in"));
 
         User owner = userRepository.findById(userId).orElse(null);
         if (owner == null)
@@ -61,6 +63,8 @@ public class PropertyController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProperty(@PathVariable Long id, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
+        if (userId == null)
+            return ResponseEntity.status(401).body(Map.of("error", "Not logged in"));
 
         Property property = propertyService.getPropertyById(id).orElse(null);
         if (property == null)
